@@ -1,0 +1,1 @@
+flyway -user=root -url=jdbc:mysql://localhost:3306/easyassess clean
