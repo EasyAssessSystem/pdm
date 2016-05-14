@@ -2,5 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+    <bean id="mockUser" class="com.stardust.easyassess.pdm.models.User">
+        <property name="id" value="5"></property>
+        <property name="username" value="alex"></property>
+    </bean>
 </beans>

@@ -1,6 +1,8 @@
 package com.stardust.easyassess.pdm.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +10,6 @@ import java.util.Set;
 @Entity
 @Table(name="roles")
 public class Role extends DataModel {
-
 
     private long id;
 
@@ -39,6 +40,7 @@ public class Role extends DataModel {
         this.name = name;
     }
 
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
                 joinColumns ={@JoinColumn(name = "role_id", referencedColumnName = "id") },
