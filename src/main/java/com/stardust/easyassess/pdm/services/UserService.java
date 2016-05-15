@@ -1,19 +1,21 @@
 package com.stardust.easyassess.pdm.services;
 
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import com.stardust.easyassess.pdm.dao.router.DataSourceRoute;
-import com.stardust.easyassess.pdm.dao.DataRepository;
-import com.stardust.easyassess.pdm.dao.UserRepository;
+import com.stardust.easyassess.pdm.dao.repositories.DataRepository;
+import com.stardust.easyassess.pdm.dao.repositories.UserRepository;
+import com.stardust.easyassess.pdm.models.User;
 
-@Service("userservice")
+
+@Service("UserService")
 @Scope("request")
-public class UserService extends EntityService {
+public class UserService extends EntityService<User> {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Autowired
     public UserService(DataSourceRoute dataSourceRoute) {
@@ -21,7 +23,7 @@ public class UserService extends EntityService {
     }
 
     @Override
-    protected DataRepository<?, Long> getRepository() {
-        return repository;
+    protected DataRepository<User, Long> getRepository() {
+        return userRepository;
     }
 }

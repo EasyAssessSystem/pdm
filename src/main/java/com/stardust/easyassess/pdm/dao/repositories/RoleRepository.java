@@ -1,9 +1,10 @@
-package com.stardust.easyassess.pdm.dao;
+package com.stardust.easyassess.pdm.dao.repositories;
 
 
 import com.stardust.easyassess.pdm.models.Role;
-import org.springframework.data.repository.CrudRepository;
 
 public interface RoleRepository extends DataRepository<Role, Long> {
-
+    default String getKeyField() {
+        return "name";
+    }
 }

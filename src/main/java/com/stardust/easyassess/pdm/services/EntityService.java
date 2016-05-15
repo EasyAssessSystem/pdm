@@ -1,12 +1,21 @@
 package com.stardust.easyassess.pdm.services;
 
+import com.stardust.easyassess.pdm.common.Selection;
 import com.stardust.easyassess.pdm.dao.router.DataSourceRoute;
-import com.stardust.easyassess.pdm.dao.DataRepository;
+import com.stardust.easyassess.pdm.dao.repositories.DataRepository;
 import com.stardust.easyassess.pdm.models.DataModel;
+import com.stardust.easyassess.pdm.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-public abstract class EntityService implements BusinessService {
+import java.util.ArrayList;
+import java.util.List;
 
-    protected abstract DataRepository<?, Long> getRepository();
+public abstract class EntityService<T> implements MaintenanceService<T> {
+
+    protected abstract DataRepository<T, Long> getRepository();
 
     protected DataSourceRoute dataSourceRoute;
 
@@ -14,8 +23,21 @@ public abstract class EntityService implements BusinessService {
         this.dataSourceRoute = httpDataSourceRoute;
     }
 
-    public DataModel find(long id) {
-        DataModel model = (DataModel) getRepository().findOne(id);
-        return model;
+    public T get(Long id) {
+        return getRepository().findOne(id);
+    }
+
+    public T get(String key) {
+        return getRepository().findBykey(key);
+    }
+
+    public Page<T> list(int page, int size, String sortBy) {
+        return list(page, size, sortBy, new ArrayList<Selection>());
+    }
+
+    public Page<T> list(int page, int size, String sortBy, List<Selection> selections) {
+        Sort sort = new Sort(Sort.Direction.ASC, sortBy);
+        Pageable pageable = new PageRequest(page, size, sort);
+        return getRepository().findAll(pageable, selections);
     }
 }
