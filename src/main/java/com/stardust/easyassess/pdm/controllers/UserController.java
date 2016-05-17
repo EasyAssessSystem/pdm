@@ -5,6 +5,7 @@ import com.stardust.easyassess.pdm.models.User;
 import com.stardust.easyassess.pdm.services.EntityService;
 
 import com.stardust.easyassess.pdm.services.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
