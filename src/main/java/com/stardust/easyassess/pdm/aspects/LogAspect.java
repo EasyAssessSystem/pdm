@@ -1,5 +1,8 @@
 package com.stardust.easyassess.pdm.aspects;
 
+import com.stardust.easyassess.pdm.common.Message;
+import com.stardust.easyassess.pdm.common.ResultCode;
+import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -53,20 +56,23 @@ public class LogAspect {
         String queryString = request.getQueryString();
 
         logger.info("Requesting with method: [" + method + "], uri: [" + uri + "], params: [" + queryString + "]");
-
-        Object result = pjp.proceed();
-
+        Object result = null;
+        try {
+            result = pjp.proceed();
+        } catch (Exception e) {
+            result = new ViewJSONWrapper(new Message("Error:" + e.getMessage()), ResultCode.FAILED);
+        }
         logger.info("Requesting completed");
         return result;
     }
 
     @AfterReturning(pointcut="controllerRequest()", argNames = "joinPoint,retVal", returning="retVal")
-    public void doAfterReturning(JoinPoint joinPoint, Object retVal) {
+    public void doAfterReturning(JoinPoint joinPoint, Object retVal) throws Throwable {
 
     }
 
-    @AfterThrowing(pointcut = "controllerRequest()", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
-
+    @AfterThrowing(pointcut = "controllerRequest() || executeService() || accessRepository()", throwing = "e")
+    public void doAfterThrowing(JoinPoint joinPoint, Throwable e) throws Throwable {
+        logger.error(e.getMessage());
     }
 }

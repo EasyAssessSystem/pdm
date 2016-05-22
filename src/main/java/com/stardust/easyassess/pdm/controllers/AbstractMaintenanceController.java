@@ -1,19 +1,21 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.pdm.common.Message;
+import com.stardust.easyassess.pdm.common.ResultCode;
 import com.stardust.easyassess.pdm.common.Selection;
+import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
+import com.stardust.easyassess.pdm.models.DataModel;
 import com.stardust.easyassess.pdm.services.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @EnableAutoConfiguration
 public abstract class AbstractMaintenanceController<T> {
@@ -27,9 +29,7 @@ public abstract class AbstractMaintenanceController<T> {
     @Autowired
     protected HttpServletResponse response;
 
-    protected String getModelName() {
-        return (String)((Map)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).get("model");
-    }
+    protected abstract String getModelName();
 
     protected MaintenanceService<T> getService() {
         return (MaintenanceService<T>)context.getBean(getModelName() + "Service");
@@ -37,18 +37,18 @@ public abstract class AbstractMaintenanceController<T> {
 
     @RequestMapping(value = "/{id}",
             method={RequestMethod.GET})
-    public T get(@PathVariable long id) {
+    public ViewJSONWrapper get(@PathVariable long id) {
         if (preGet(id)) {
             return postGet(getService().get(id));
         } else {
-            return null;
+            return createEmptyResult();
         }
     }
 
 
     @RequestMapping(path="/list",
             method={RequestMethod.GET})
-    public Page<T> list(@RequestParam(value = "page", defaultValue = "0") Integer page,
+    public ViewJSONWrapper list(@RequestParam(value = "page", defaultValue = "0") Integer page,
                            @RequestParam(value = "size", defaultValue = "4") Integer size,
                            @RequestParam(value = "sort", defaultValue = "id") String sort,
                            @RequestParam(value = "filterField", defaultValue = "") String field,
@@ -60,28 +60,29 @@ public abstract class AbstractMaintenanceController<T> {
         if (preList(selections)) {
             return postList(getService().list(page, size , sort, selections));
         } else {
-            return null;
+            return createEmptyResult();
         }
     }
 
     @ResponseBody
     @RequestMapping(value="{id}", method={RequestMethod.PUT})
-    public T update(@PathVariable long id,
+    public ViewJSONWrapper update(@PathVariable long id,
                             @RequestBody T model) {
+        ((DataModel)model).setId(id);
         if (preUpdate(id, model)) {
             return postUpdate(getService().save(model));
         } else {
-            return null;
+            return createEmptyResult();
         }
     }
 
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
-    public T add(@RequestBody T model) {
+    public ViewJSONWrapper add(@RequestBody T model) {
         if (preAdd(model)) {
             return postAdd(getService().save(model));
         } else {
-            return null;
+            return createEmptyResult();
         }
     }
 
@@ -98,16 +99,16 @@ public abstract class AbstractMaintenanceController<T> {
         return true;
     }
 
-    protected T postGet(T model) {
-        return model;
+    protected ViewJSONWrapper postGet(T model) {
+        return new ViewJSONWrapper(model);
     }
 
     protected boolean preList(List<Selection> selections) {
         return true;
     }
 
-    protected Page<T> postList(Page<T> page) {
-        return page;
+    protected ViewJSONWrapper postList(Page<T> page) {
+        return new ViewJSONWrapper(page);
     }
 
     protected boolean preDelete(long id) {
@@ -122,15 +123,19 @@ public abstract class AbstractMaintenanceController<T> {
         return  true;
     }
 
-    protected T postUpdate(T model) {
-        return  model;
+    protected ViewJSONWrapper postUpdate(T model) {
+        return new ViewJSONWrapper(model);
     }
 
     protected boolean preAdd(T model) {
         return  true;
     }
 
-    protected T postAdd(T model) {
-        return  model;
+    protected ViewJSONWrapper postAdd(T model) {
+        return new ViewJSONWrapper(model);
+    }
+
+    protected ViewJSONWrapper createEmptyResult() {
+        return new ViewJSONWrapper(new Message("无记录"), ResultCode.NOT_FOUND);
     }
 }

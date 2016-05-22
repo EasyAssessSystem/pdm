@@ -28,6 +28,11 @@ public class ViewJSONWrapper {
         result = message.getType().equals(Message.MessageType.ERROR) ? ResultCode.FAILED : ResultCode.SUCC;
     }
 
+    public ViewJSONWrapper(Message message, ResultCode code) {
+        messages.add(message);
+        result = code;
+    }
+
     public List<Message> getMessages() {
         return messages;
     }
