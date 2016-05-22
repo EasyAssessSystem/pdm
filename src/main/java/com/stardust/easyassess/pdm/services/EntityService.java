@@ -1,10 +1,8 @@
 package com.stardust.easyassess.pdm.services;
 
 import com.stardust.easyassess.pdm.common.Selection;
-import com.stardust.easyassess.pdm.dao.router.DataSourceRoute;
+import com.stardust.easyassess.pdm.common.ViewContext;
 import com.stardust.easyassess.pdm.dao.repositories.DataRepository;
-import com.stardust.easyassess.pdm.models.DataModel;
-import com.stardust.easyassess.pdm.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +15,10 @@ public abstract class EntityService<T> implements MaintenanceService<T> {
 
     protected abstract DataRepository<T, Long> getRepository();
 
-    protected DataSourceRoute dataSourceRoute;
+    protected ViewContext context;
 
-    public EntityService(DataSourceRoute httpDataSourceRoute) {
-        this.dataSourceRoute = httpDataSourceRoute;
+    public EntityService(ViewContext context) {
+        this.context = context;
     }
 
     public T get(Long id) {
@@ -40,4 +38,17 @@ public abstract class EntityService<T> implements MaintenanceService<T> {
         Pageable pageable = new PageRequest(page, size, sort);
         return getRepository().findAll(pageable, selections);
     }
+
+    public T save(T model) {
+        return getRepository().save(model);
+    }
+
+    public void remove(T model) {
+        getRepository().delete(model);
+    }
+
+    public void remove(Long id) {
+        getRepository().delete(id);
+    }
+
 }

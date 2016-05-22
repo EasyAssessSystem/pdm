@@ -11,8 +11,6 @@ import java.util.Set;
 @Table(name="roles")
 public class Role extends DataModel {
 
-    private long id;
-
     private String name;
 
     private Set<User> users = new HashSet<User>();
@@ -21,15 +19,12 @@ public class Role extends DataModel {
 
     }
 
+    @Override
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -11,4 +11,9 @@ public interface MaintenanceService<T> {
 
     Page<T> list(int page, int size, String sortBy);
     Page<T> list(int page, int size, String sortBy, List<Selection> selections);
+
+    T save(T model);
+
+    void remove(T model);
+    void remove(Long id);
 }

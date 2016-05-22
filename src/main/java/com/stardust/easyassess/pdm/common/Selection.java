@@ -142,6 +142,11 @@ public class Selection {
 
         return predicate;
     }
+
+    @Override
+    public String toString() {
+        return operand + "(" + property + operator + value + ")";
+    }
 }
 
 

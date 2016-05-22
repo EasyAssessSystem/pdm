@@ -9,8 +9,6 @@ import java.util.Set;
 @Table(name="users")
 public class User extends DataModel {
 
-    private long id;
-
     private String name;
 
     private String status;
@@ -27,15 +25,12 @@ public class User extends DataModel {
 
     }
 
+    @Override
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
