@@ -5,7 +5,7 @@
 
 	<groupId>com.stardust.easyassess</groupId>
 	<artifactId>easyassess-pdm</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>easyassess-pdm</name>
@@ -57,7 +57,8 @@
 		<dependency>
 			<groupId>com.stardust.easyassess</groupId>
 			<artifactId>easyassess-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>[0.0.1,1.0.0]</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
