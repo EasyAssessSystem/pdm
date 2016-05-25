@@ -1,6 +1,8 @@
 package com.stardust.easyassess.pdm.models;
 
-public class DataModel {
+import java.io.Serializable;
+
+public class DataModel implements Serializable {
 
     protected long id;
 
@@ -10,5 +12,9 @@ public class DataModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean validate() {
+        return true;
     }
 }

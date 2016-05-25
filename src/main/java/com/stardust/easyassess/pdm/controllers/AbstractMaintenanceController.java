@@ -120,7 +120,7 @@ public abstract class AbstractMaintenanceController<T> {
     }
 
     protected boolean preUpdate(long id, T model) {
-        return  true;
+        return ((DataModel)model).validate();
     }
 
     protected ViewJSONWrapper postUpdate(T model) {
@@ -128,7 +128,7 @@ public abstract class AbstractMaintenanceController<T> {
     }
 
     protected boolean preAdd(T model) {
-        return  true;
+        return ((DataModel)model).validate();
     }
 
     protected ViewJSONWrapper postAdd(T model) {
