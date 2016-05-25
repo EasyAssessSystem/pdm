@@ -5,6 +5,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.web.context.request.RequestContextListener;
 import org.apache.log4j.Logger;
 
@@ -15,8 +18,12 @@ public class EasyassessPdmApplication {
 
 	static {
 		try{
-			String log4jPath = EasyassessPdmApplication.class.getClassLoader().getResource("").getPath()+"log4j.properties";
-			PropertyConfigurator.configure(log4jPath);
+			ClassLoader cl = EasyassessPdmApplication.class.getClassLoader();
+			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(cl);
+			Resource[] resources = resolver.getResources("classpath:/log4j.properties") ;
+			for(Resource log4j : resources) {
+				PropertyConfigurator.configure(log4j.getURL());
+			}
 		}catch (Exception e){
 			logger.error(e.getMessage());
 		}
