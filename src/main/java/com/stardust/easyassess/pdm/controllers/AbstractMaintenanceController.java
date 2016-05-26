@@ -6,28 +6,15 @@ import com.stardust.easyassess.pdm.common.Selection;
 import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
 import com.stardust.easyassess.pdm.models.DataModel;
 import com.stardust.easyassess.pdm.services.MaintenanceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 @EnableAutoConfiguration
-public abstract class AbstractMaintenanceController<T> {
-
-    @Autowired
-    protected ApplicationContext context;
-
-    @Autowired
-    protected HttpServletRequest request;
-
-    @Autowired
-    protected HttpServletResponse response;
+public abstract class AbstractMaintenanceController<T> extends ActionController {
 
     protected abstract String getModelName();
 

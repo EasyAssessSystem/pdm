@@ -60,7 +60,8 @@ public class LogAspect {
         try {
             result = pjp.proceed();
         } catch (Exception e) {
-            result = new ViewJSONWrapper(new Message("Error:" + e.getMessage()), ResultCode.FAILED);
+            logger.error(e.getMessage());
+            result = new ViewJSONWrapper(new Message("Error:" + e.getMessage()), ResultCode.FAILED);e.printStackTrace();
         }
         logger.info("Requesting completed");
         return result;
@@ -71,7 +72,7 @@ public class LogAspect {
 
     }
 
-    @AfterThrowing(pointcut = "controllerRequest() || executeService() || accessRepository()", throwing = "e")
+    @AfterThrowing(pointcut = "executeService() || accessRepository()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Throwable e) throws Throwable {
         logger.error(e.getMessage());
     }
