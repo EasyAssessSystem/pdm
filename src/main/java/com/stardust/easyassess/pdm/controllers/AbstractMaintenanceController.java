@@ -19,7 +19,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
     protected abstract String getModelName();
 
     protected MaintenanceService<T> getService() {
-        return (MaintenanceService<T>)context.getBean(getModelName() + "Service");
+        return (MaintenanceService<T>)getApplicationContext().getBean(getModelName() + "Service");
     }
 
     @RequestMapping(value = "/{id}",
