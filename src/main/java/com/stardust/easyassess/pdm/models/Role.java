@@ -15,6 +15,8 @@ public class Role extends DataModel {
 
     private Set<User> users = new HashSet<User>();
 
+    private String status;
+
     public Role() {
 
     }
@@ -47,6 +49,14 @@ public class Role extends DataModel {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }
