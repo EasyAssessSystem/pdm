@@ -2,8 +2,8 @@ package com.stardust.easyassess.pdm.models;
 
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="User")
 @Table(name="users")
@@ -19,7 +19,7 @@ public class User extends DataModel {
 
     private boolean canLaunchAssessment;
 
-    private Set<Role> roles = new HashSet<Role>();
+    private List<Role> roles = new ArrayList<Role>();
 
     public User() {
 
@@ -79,11 +79,11 @@ public class User extends DataModel {
             joinColumns ={@JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id")
             })
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 }

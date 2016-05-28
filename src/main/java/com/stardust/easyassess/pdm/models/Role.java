@@ -4,8 +4,8 @@ package com.stardust.easyassess.pdm.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="roles")
@@ -13,7 +13,7 @@ public class Role extends DataModel {
 
     private String name;
 
-    private Set<User> users = new HashSet<User>();
+    private List<User> users = new ArrayList<User>();
 
     private String status;
 
@@ -39,11 +39,11 @@ public class Role extends DataModel {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
