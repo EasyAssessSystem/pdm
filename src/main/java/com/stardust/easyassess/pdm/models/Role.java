@@ -25,7 +25,7 @@ public class Role extends DataModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -38,11 +38,7 @@ public class Role extends DataModel {
     }
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(name = "users_roles",
-                joinColumns ={@JoinColumn(name = "role_id", referencedColumnName = "id") },
-                    inverseJoinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id")
-                })
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     public Set<User> getUsers() {
         return users;
     }

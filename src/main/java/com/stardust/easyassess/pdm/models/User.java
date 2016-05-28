@@ -29,7 +29,7 @@ public class User extends DataModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -74,7 +74,11 @@ public class User extends DataModel {
         this.canLaunchAssessment = canLaunchAssessment;
     }
 
-    @ManyToMany(mappedBy = "users", fetch=FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(name = "users_roles",
+            joinColumns ={@JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id")
+            })
     public Set<Role> getRoles() {
         return roles;
     }
