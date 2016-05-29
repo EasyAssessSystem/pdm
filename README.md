@@ -2,13 +2,12 @@
 This service supply entity data CURD management API.
 
 ## Dependencies
-```
 Java 8
 MySQL
 Redis
 [ES Core Package](https://github.com/EasyAssessSystem/core)
 [ES Authentication Service](https://github.com/EasyAssessSystem/authentication-service)
-```
+
 
 ## Development Installation
 ### 1. Make sure get and build ES core package
