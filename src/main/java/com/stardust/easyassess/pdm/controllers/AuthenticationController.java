@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping({"authentication"})
+@RequestMapping({"authentication","{domain}/data/authentication"})
 @EnableAutoConfiguration
 public class AuthenticationController {
 
