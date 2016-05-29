@@ -1,5 +1,6 @@
 package com.stardust.easyassess.pdm;
 
+import com.stardust.easyassess.pdm.common.AuthenticationProxy;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +19,7 @@ public class EasyassessPdmApplication {
 
 	static {
 		try{
+			AuthenticationProxy.getInstance().fetch();
 			ClassLoader cl = EasyassessPdmApplication.class.getClassLoader();
 			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(cl);
 			Resource[] resources = resolver.getResources("classpath:/log4j.properties") ;
