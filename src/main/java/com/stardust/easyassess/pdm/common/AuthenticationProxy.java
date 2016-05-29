@@ -2,30 +2,31 @@ package com.stardust.easyassess.pdm.common;
 
 
 import com.stardust.easyassess.core.security.*;
-import com.stardust.easyassess.pdm.models.Role;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class AuthenticationProxy {
 
-    private static AuthenticationProxy instance;
+    @Value("${server.port}")
+    private int port;
 
-    private AuthenticationClient client = new AuthenticationClient("http://127.0.0.1:1337");
+    @Autowired
+    private AuthenticationClient authenticationClient;
 
     private APIAuthentication authentication;
+
+    private Object lock = new Object();
 
     private AuthenticationProxy() {
     }
 
     public void fetch() {
-        synchronized (authentication) {
-            authentication = client.register(new PermissionChangeListener("pdm", 8180, "/pdm/data/user/1"));
+        synchronized (lock) {
+            authentication = authenticationClient.register(new PermissionChangeListener("pdm", port, "/authentication/refresh"));
         }
-    }
-
-    public static AuthenticationProxy getInstance() {
-        if (instance == null) {
-            instance = new AuthenticationProxy();
-        }
-        return instance;
     }
 
     public APIAuthentication getAuthentication() {
@@ -35,10 +36,18 @@ public class AuthenticationProxy {
         return authentication;
     }
 
-    public boolean isPermitted(String uri, String method, Role role) {
+    public RolePermissions getRolePermissions(long role) {
+        return authenticationClient.getRolePermissions(role);
+    }
+
+    public void saveRolePermissions(RolePermissions rolePermissions) {
+        authenticationClient.saveRolePermissions(rolePermissions);
+    }
+
+    public boolean isPermitted(String uri, String method, long role) {
         APIAuthentication authentication = getAuthentication();
         for (RolePermissions rolePermissions : authentication.getRoles()) {
-            if (rolePermissions.getRole().equals(role.getId())) {
+            if (rolePermissions.getRole().equals(role)) {
                 for (Permission permission : rolePermissions.getPermissions()) {
                     if (uri.startsWith(permission.getPath())) {
                         return permission.allowed(uri, method);
