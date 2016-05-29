@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping({"authentication"})
 @EnableAutoConfiguration
-public class RefreshAuthenticationController  {
+public class AuthenticationController {
     @RequestMapping(value = "/refresh",
             method={RequestMethod.GET})
     public void refresh() {

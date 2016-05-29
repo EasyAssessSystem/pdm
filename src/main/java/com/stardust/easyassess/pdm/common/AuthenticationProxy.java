@@ -16,7 +16,9 @@ public class AuthenticationProxy {
     }
 
     public void fetch() {
-        authentication = client.register(new PermissionChangeListener("pdm", 8180, "/pdm/data/user/1"));
+        synchronized (authentication) {
+            authentication = client.register(new PermissionChangeListener("pdm", 8180, "/pdm/data/user/1"));
+        }
     }
 
     public static AuthenticationProxy getInstance() {
