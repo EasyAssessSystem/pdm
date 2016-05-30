@@ -62,8 +62,14 @@ public class UserController extends AbstractMaintenanceController<User>  {
         return password;
     }
 
+    @RequestMapping(value="/session/logoff", method={RequestMethod.GET})
+    public ViewJSONWrapper logoff() {
+        getSession().remove("currentUser");
+        return new ViewJSONWrapper(new Message("退出成功"), ResultCode.SUCC);
+    }
+
     @RequestMapping(value="/session/{username}/{password}", method={RequestMethod.GET})
-    public ViewJSONWrapper update(@PathVariable String username,
+    public ViewJSONWrapper verify(@PathVariable String username,
                                   @PathVariable String password,
                                   @PathVariable String domain) {
         ViewJSONWrapper jsonWrapper;
