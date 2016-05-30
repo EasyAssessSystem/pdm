@@ -1,10 +1,23 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.core.security.APIAuthentication;
+import com.stardust.easyassess.core.security.RolePermissions;
+import com.stardust.easyassess.pdm.common.AuthenticationProxy;
+import com.stardust.easyassess.pdm.common.Message;
+import com.stardust.easyassess.pdm.common.ResultCode;
+import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
+import com.stardust.easyassess.pdm.models.Role;
 import com.stardust.easyassess.pdm.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -15,5 +28,70 @@ public class UserController extends AbstractMaintenanceController<User>  {
     @Override
     protected String getModelName() {
         return "user";
+    }
+
+    @Autowired
+    private AuthenticationProxy authenticationProxy;
+
+    @Override
+    protected boolean preUpdate(long id, User model) {
+        super.preUpdate(id, model);
+        User user = getService().get(model.getId());
+
+        if (!user.getPassword().equals(model.getPassword())) {
+            model.setPassword(encryption(model.getPassword()));
+        }
+
+        return true;
+    }
+
+    @Override
+    protected boolean preAdd(User model) {
+        model.setPassword(encryption(model.getPassword()));
+        return true;
+    }
+
+    private String encryption(String password) {
+        try {
+            String hashed = DatatypeConverter.printHexBinary(
+                    MessageDigest.getInstance("MD5").digest(password.getBytes("UTF-8")));
+            return hashed;
+        } catch (Exception e) {
+
+        }
+        return password;
+    }
+
+    @RequestMapping(value="/session/{username}/{password}", method={RequestMethod.GET})
+    public ViewJSONWrapper update(@PathVariable String username,
+                                  @PathVariable String password,
+                                  @PathVariable String domain) {
+        ViewJSONWrapper jsonWrapper;
+        User user = getService().get(username);
+        if (user != null && user.getId() > 0 && user.getPassword().equals(encryption(password))) {
+            APIAuthentication authentication = authenticationProxy.getAuthentication();
+
+            List<RolePermissions> rolePermissionses = new ArrayList<RolePermissions>();
+
+            for (final RolePermissions rp : authentication.getRoles()) {
+                for (final Role role : user.getRoles()) {
+                    if (role.getId().equals(rp.getRole())) {
+                        rolePermissionses.add(rp);
+                    }
+                }
+            }
+
+            getSession().put("currentUser", user);
+
+            Map session = new HashMap<String, Object>();
+            session.put("authentication", rolePermissionses);
+            session.put("currentUser", user);
+            session.put("domain", domain);
+
+            jsonWrapper = new ViewJSONWrapper(session);
+        } else {
+            jsonWrapper = new ViewJSONWrapper(new Message("用户名密码错误", Message.MessageType.ERROR), ResultCode.FAILED);
+        }
+        return jsonWrapper;
     }
 }
