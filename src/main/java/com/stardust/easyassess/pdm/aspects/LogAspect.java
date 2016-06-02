@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
+@Order(2)
 public class LogAspect {
 
     private static Logger logger = Logger.getLogger(LogAspect.class);
