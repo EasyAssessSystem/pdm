@@ -26,7 +26,7 @@ public class Selection {
     }
 
     public enum Operator {
-        EQUAL("="),NOT_EQUAL("!="),GREATER(">"),GREATER_EQUAL(">="),LESS("<"),LESS_EQUAL("<="),LIKE(" like ");
+        EQUAL("="),NOT_EQUAL("!="),GREATER(">"),GREATER_EQUAL(">="),LESS("<"),LESS_EQUAL("<="),LIKE(" like "),IS_NULL( "" );
 
         private String opt = "";
 
@@ -51,6 +51,10 @@ public class Selection {
 
     public Selection() {
 
+    }
+
+    public Selection(final String p, final Operator opt) {
+        this(p, opt, null, Operand.EMPTY);
     }
 
     public Selection(final String p, final Operator opt, final Object v) {
@@ -127,6 +131,9 @@ public class Selection {
                 } else {
                     predicate = cb.equal(namePath, this.getValue());
                 }
+                break;
+            case IS_NULL:
+                predicate = cb.isNull(namePath);
                 break;
             case EQUAL:
             default:

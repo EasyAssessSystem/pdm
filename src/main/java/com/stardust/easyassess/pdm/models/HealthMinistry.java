@@ -70,4 +70,12 @@ public class HealthMinistry extends DataModel {
     public void setMinistries(List<HealthMinistry> ministries) {
         this.ministries = ministries;
     }
+
+    @Transient
+    public Long getSupervisorId() {
+        if (getSupervisor() != null) {
+            return getSupervisor().getId();
+        }
+        return new Long(-1);
+    }
 }

@@ -64,9 +64,18 @@ public interface DataRepository<T, ID extends Serializable> extends PagingAndSor
             for (Selection selection : selections) {
                 if (selection.getProperty() == null
                         || selection.getProperty().isEmpty()) continue;
-                if (selection.getValue() == null
-                        || selection.getValue().toString().isEmpty()) continue;
-                  predicates.add(selection.toPredicate(cb, root.get(selection.getProperty())));
+                if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
+                        || selection.getValue().toString().isEmpty())) continue;
+
+                if (selection.getProperty().contains(".")) {
+                    String [] p = selection.getProperty().split("\\.");
+                    String property = p[0];
+                    String sub = p[1];
+                    Join<T, ?> join = root.join(property, JoinType.LEFT);
+                    predicates.add(selection.toPredicate(cb, join.get(sub)));
+                } else {
+                    predicates.add(selection.toPredicate(cb, root.get(selection.getProperty())));
+                }
             }
 
             query.where(predicates.toArray(new Predicate[selections.size()]));
