@@ -1,25 +1,38 @@
 package com.stardust.easyassess.pdm.controllers;
 
-import com.stardust.easyassess.pdm.common.Message;
-import com.stardust.easyassess.pdm.common.ResultCode;
-import com.stardust.easyassess.pdm.common.Selection;
-import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
+import com.stardust.easyassess.pdm.common.*;
 import com.stardust.easyassess.pdm.models.DataModel;
 import com.stardust.easyassess.pdm.services.MaintenanceService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @EnableAutoConfiguration
 public abstract class AbstractMaintenanceController<T> extends ActionController {
 
     protected abstract String getModelName();
 
+    protected Map<String, ListSelectionBuilder> listSelectionBuilders = new HashMap<String, ListSelectionBuilder>();
+
     protected MaintenanceService<T> getService() {
         return (MaintenanceService<T>)getApplicationContext().getBean(getModelName() + "Service");
+    }
+
+
+    @PostConstruct
+    public void init() {
+        this.initSelectionBuilders();
+    }
+
+
+    protected void initSelectionBuilders() {
+
     }
 
     @RequestMapping(value = "/{id}",
@@ -41,8 +54,24 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
                            @RequestParam(value = "filterField", defaultValue = "") String field,
                            @RequestParam(value = "filterValue", defaultValue = "") String value ) {
 
+        return this.list(page, size, sort, field, value , null);
+    }
+
+    @RequestMapping(path="/list/{subset}",
+            method={RequestMethod.GET})
+    public ViewJSONWrapper list(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                @RequestParam(value = "size", defaultValue = "4") Integer size,
+                                @RequestParam(value = "sort", defaultValue = "id") String sort,
+                                @RequestParam(value = "filterField", defaultValue = "") String field,
+                                @RequestParam(value = "filterValue", defaultValue = "") String value,
+                                @PathVariable String subset) {
+
         List<Selection> selections = new ArrayList<Selection>();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
+
+        if (subset != null && !subset.isEmpty() && listSelectionBuilders.containsKey(subset)) {
+            listSelectionBuilders.get(subset).buildSelections(selections, getApplicationContext().getBean(ViewContext.class));
+        }
 
         if (preList(selections)) {
             return postList(getService().list(page, size , sort, selections));
