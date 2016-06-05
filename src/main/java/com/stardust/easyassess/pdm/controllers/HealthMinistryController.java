@@ -20,24 +20,6 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
     }
 
     @Override
-    protected boolean preUpdate(long id, HealthMinistry model) {
-        super.preUpdate(id, model);
-        for (HealthMinistry child : model.getMinistries()) {
-            child.setSupervisor(model);
-            getService().save(child);
-        }
-        return true;
-    }
-
-    @Override
-    protected boolean preAdd(HealthMinistry model) {
-        for (HealthMinistry child : model.getMinistries()) {
-            child.setSupervisor(model);
-        }
-        return true;
-    }
-
-    @Override
     protected void initSelectionBuilders() {
         listSelectionBuilders.put("unassigned", new ListSelectionBuilder() {
             @Override

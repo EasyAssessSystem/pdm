@@ -25,4 +25,19 @@ public class HealthMinistryService extends EntityService<HealthMinistry> {
     protected DataRepository<HealthMinistry, Long> getRepository() {
         return healthMinistryRepository;
     }
+
+    @Override
+    public HealthMinistry save(HealthMinistry model) {
+        if (model.getId() > 0) {
+            HealthMinistry prev = getRepository().findOne(model.getId());
+            model.setSupervisor(prev.getSupervisor());
+            for (HealthMinistry ministry : prev.getMinistries()) {
+                if (!model.getMinistries().contains(ministry)) {
+                    ministry.setSupervisor(null);
+                }
+            }
+        }
+
+        return getRepository().save(model);
+    }
 }

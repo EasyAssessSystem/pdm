@@ -1,8 +1,12 @@
 package com.stardust.easyassess.pdm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +19,10 @@ public class HealthMinistry extends DataModel {
 
     private String status;
 
+    @JsonBackReference
     private HealthMinistry supervisor;
 
+    @JsonManagedReference
     private List<HealthMinistry> ministries = new ArrayList<HealthMinistry>();
 
     @Override
@@ -51,8 +57,7 @@ public class HealthMinistry extends DataModel {
         this.status = status;
     }
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supervisor_id", referencedColumnName="id")
     public HealthMinistry getSupervisor() {
         return supervisor;
@@ -62,11 +67,13 @@ public class HealthMinistry extends DataModel {
         this.supervisor = supervisor;
     }
 
-    @OneToMany(mappedBy="supervisor")
+    @OneToMany(fetch = FetchType.LAZY,
+               mappedBy="supervisor",
+               //orphanRemoval = true,
+               cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     public List<HealthMinistry> getMinistries() {
         return ministries;
     }
-
     public void setMinistries(List<HealthMinistry> ministries) {
         this.ministries = ministries;
     }
@@ -77,5 +84,13 @@ public class HealthMinistry extends DataModel {
             return getSupervisor().getId();
         }
         return new Long(-1);
+    }
+
+    @Transient
+    public String getSupervisorName() {
+        if (getSupervisor() != null) {
+            return getSupervisor().getName();
+        }
+        return null;
     }
 }
