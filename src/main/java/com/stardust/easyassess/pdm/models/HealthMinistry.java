@@ -60,7 +60,7 @@ public class HealthMinistry extends DataModel {
         this.status = status;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "supervisor_id", referencedColumnName="id")
     public HealthMinistry getSupervisor() {
         return supervisor;
