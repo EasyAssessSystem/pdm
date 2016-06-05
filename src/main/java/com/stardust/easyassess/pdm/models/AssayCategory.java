@@ -1,6 +1,10 @@
 package com.stardust.easyassess.pdm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="assay_categories")
@@ -9,6 +13,8 @@ public class AssayCategory extends DataModel {
     private String name;
 
     private String status;
+
+    private List<AssayCode> codes = new ArrayList<AssayCode>();
 
     public AssayCategory() {
 
@@ -38,4 +44,13 @@ public class AssayCategory extends DataModel {
         this.status = status;
     }
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    public List<AssayCode> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<AssayCode> codes) {
+        this.codes = codes;
+    }
 }

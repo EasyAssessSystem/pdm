@@ -1,6 +1,10 @@
 package com.stardust.easyassess.pdm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="assay_code_groups")
@@ -9,6 +13,8 @@ public class CodeGroup extends DataModel {
     private String name;
 
     private String status;
+
+    private List<AssayCode> codes = new ArrayList<AssayCode>();
 
     public CodeGroup() {
 
@@ -37,4 +43,17 @@ public class CodeGroup extends DataModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy="group",
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
+    public List<AssayCode> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<AssayCode> codes) {
+        this.codes = codes;
+    }
+
 }
