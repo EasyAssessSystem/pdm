@@ -21,6 +21,8 @@ public class User extends DataModel {
 
     private List<Role> roles = new ArrayList<Role>();
 
+    private List<HealthMinistry> ministries = new ArrayList<HealthMinistry>();
+
     public User() {
 
     }
@@ -85,5 +87,18 @@ public class User extends DataModel {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(name = "users_ministries",
+            joinColumns ={@JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "ministry_id")
+            })
+    public List<HealthMinistry> getMinistries() {
+        return ministries;
+    }
+
+    public void setMinistries(List<HealthMinistry> ministries) {
+        this.ministries = ministries;
     }
 }

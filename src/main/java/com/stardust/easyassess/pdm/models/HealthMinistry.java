@@ -1,6 +1,7 @@
 package com.stardust.easyassess.pdm.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -24,6 +25,8 @@ public class HealthMinistry extends DataModel {
 
     @JsonManagedReference
     private List<HealthMinistry> ministries = new ArrayList<HealthMinistry>();
+
+    private List<User> users = new ArrayList<User>();
 
     @Override
     @Id
@@ -76,6 +79,16 @@ public class HealthMinistry extends DataModel {
     }
     public void setMinistries(List<HealthMinistry> ministries) {
         this.ministries = ministries;
+    }
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "ministries", fetch = FetchType.LAZY)
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Transient
