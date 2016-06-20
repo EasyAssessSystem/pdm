@@ -1,8 +1,6 @@
 package com.stardust.easyassess.pdm.aspects;
 
-import com.stardust.easyassess.pdm.common.Message;
-import com.stardust.easyassess.pdm.common.ResultCode;
-import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
+import com.stardust.easyassess.core.presentation.*;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

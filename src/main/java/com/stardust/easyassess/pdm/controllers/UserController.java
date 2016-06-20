@@ -1,18 +1,17 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.core.presentation.*;
 import com.stardust.easyassess.core.security.APIAuthentication;
 import com.stardust.easyassess.core.security.Permission;
 import com.stardust.easyassess.core.security.RolePermissions;
 import com.stardust.easyassess.pdm.common.AuthenticationProxy;
-import com.stardust.easyassess.pdm.common.Message;
-import com.stardust.easyassess.pdm.common.ResultCode;
-import com.stardust.easyassess.pdm.common.ViewJSONWrapper;
 import com.stardust.easyassess.pdm.models.Role;
 import com.stardust.easyassess.pdm.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -121,7 +120,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
             session.put("authentication", rolePermissionses);
             session.put("currentUser", user);
             session.put("domain", domain);
-
+            session.put("sessionKey", getSession().getSessionKey());
             jsonWrapper = new ViewJSONWrapper(session);
         } else {
             jsonWrapper = new ViewJSONWrapper(new Message("用户名密码错误", Message.MessageType.ERROR), ResultCode.FAILED);
