@@ -1,6 +1,7 @@
 package com.stardust.easyassess.pdm.dao.repositories;
 
-import com.stardust.easyassess.pdm.common.Selection;
+import com.stardust.easyassess.pdm.common.PredicateQueryProvider;
+import com.stardust.easyassess.core.query.Selection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -57,6 +58,8 @@ public interface DataRepository<T, ID extends Serializable> extends PagingAndSor
     default Page<T> findAll(Pageable page, List<Selection> selections) {
 
         return this.findAll((root, query, cb) -> {
+            PredicateQueryProvider pqp = new PredicateQueryProvider(root, cb);
+
             List<Predicate> predicates = new ArrayList<Predicate>();
 
             predicates.add(cb.greaterThan(root.get("id"), 0));
@@ -67,15 +70,17 @@ public interface DataRepository<T, ID extends Serializable> extends PagingAndSor
                 if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
                         || selection.getValue().toString().isEmpty())) continue;
 
-                if (selection.getProperty().contains(".")) {
-                    String [] p = selection.getProperty().split("\\.");
-                    String property = p[0];
-                    String sub = p[1];
-                    Join<T, ?> join = root.join(property, JoinType.LEFT);
-                    predicates.add(selection.toPredicate(cb, join.get(sub)));
-                } else {
-                    predicates.add(selection.toPredicate(cb, root.get(selection.getProperty())));
-                }
+                  predicates.add(pqp.toQueryObject(selection));
+
+//                if (selection.getProperty().contains(".")) {
+//                    String [] p = selection.getProperty().split("\\.");
+//                    String property = p[0];
+//                    String sub = p[1];
+//                    Join<T, ?> join = root.join(property, JoinType.LEFT);
+//                    predicates.add(selection.toPredicate(cb, join.get(sub)));
+//                } else {
+//                    predicates.add(selection.toPredicate(cb, root.get(selection.getProperty())));
+//                }
             }
 
             query.where(predicates.toArray(new Predicate[selections.size()]));

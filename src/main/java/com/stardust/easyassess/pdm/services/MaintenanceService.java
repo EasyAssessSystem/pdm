@@ -1,6 +1,6 @@
 package com.stardust.easyassess.pdm.services;
 
-import com.stardust.easyassess.pdm.common.Selection;
+import com.stardust.easyassess.core.query.Selection;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

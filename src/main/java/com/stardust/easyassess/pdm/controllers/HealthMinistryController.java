@@ -1,7 +1,7 @@
 package com.stardust.easyassess.pdm.controllers;
 
 import com.stardust.easyassess.pdm.common.ListSelectionBuilder;
-import com.stardust.easyassess.pdm.common.Selection;
+import com.stardust.easyassess.core.query.Selection;
 import com.stardust.easyassess.pdm.common.ViewContext;
 import com.stardust.easyassess.pdm.models.HealthMinistry;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
