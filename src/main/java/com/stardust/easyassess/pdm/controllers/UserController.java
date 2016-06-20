@@ -114,7 +114,8 @@ public class UserController extends AbstractMaintenanceController<User>  {
                     }
                 }
             }
-            getSession().put("currentUser", user);
+            getSession().put("currentUser", user.getUsername());
+            getSession().put("permissions", rolePermissionses);
 
             Map session = new HashMap<String, Object>();
             session.put("authentication", rolePermissionses);
