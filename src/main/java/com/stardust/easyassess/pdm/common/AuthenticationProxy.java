@@ -44,14 +44,12 @@ public class AuthenticationProxy {
         authenticationClient.saveRolePermissions(rolePermissions);
     }
 
-    public boolean isPermitted(String uri, String method, long role) {
+    public boolean isPermitted(String uri, String method) {
         APIAuthentication authentication = getAuthentication();
         for (RolePermissions rolePermissions : authentication.getRoles()) {
-            if (rolePermissions.getRole().equals(role)) {
-                for (Permission permission : rolePermissions.getPermissions()) {
-                    if (uri.startsWith(permission.getPath())) {
-                        return permission.allowed(uri, method);
-                    }
+            for (Permission permission : rolePermissions.getPermissions()) {
+                if (uri.startsWith(permission.getPath())) {
+                    return permission.allowed(uri, method);
                 }
             }
         }

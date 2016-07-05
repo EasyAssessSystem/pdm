@@ -20,6 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Aspect
 @Component
@@ -53,17 +54,16 @@ public class AuthenticationAspect {
 //        String uri = request.getRequestURI();
 //
 //        ContextSession session = applicationContext.getBean(ContextSession.class);
-//        User user = (User)session.get("currentUser", null);
+//        Map profile = (Map)session.get("userProfile", null);
 //        List<RolePermissions> rolePermissionses
 //                = (List<RolePermissions>)
 //                    session.get("authentication", new ArrayList<RolePermissions>());
 //
-//        if (user == null || user.getId() <=0) {
-//            //throw new Exception("无效的会话,请重新登录");
+//        if (profile == null || (Long)profile.get("user_id") <=0) {
+//            throw new Exception("无效的会话,请重新登录");
 //        }
 
-        //authenticationProxy.isPermitted(uri, method, user.getRoles());
-
+        // authenticationProxy.isPermitted(uri, method, user.getRoles());
     }
 
     @After("controllerRequest()")

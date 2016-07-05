@@ -5,8 +5,11 @@ import com.stardust.easyassess.core.security.APIAuthentication;
 import com.stardust.easyassess.core.security.Permission;
 import com.stardust.easyassess.core.security.RolePermissions;
 import com.stardust.easyassess.pdm.common.AuthenticationProxy;
+import com.stardust.easyassess.pdm.models.HealthMinistry;
 import com.stardust.easyassess.pdm.models.Role;
 import com.stardust.easyassess.pdm.models.User;
+import org.apache.commons.collections.iterators.ObjectArrayIterator;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +67,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
 
     @RequestMapping(value="/session/logoff", method={RequestMethod.GET})
     public ViewJSONWrapper logoff() {
-        getSession().remove("currentUser");
+        getSession().remove("userProfile");
         return new ViewJSONWrapper(new Message("退出成功"), ResultCode.SUCC);
     }
 
@@ -114,8 +117,17 @@ public class UserController extends AbstractMaintenanceController<User>  {
                     }
                 }
             }
-            getSession().put("currentUser", user.getUsername());
-            getSession().put("permissions", rolePermissionses);
+
+            Map<String, Object> profile = new HashedMap();
+            List<Long> ministries = new ArrayList();
+            profile.put("username", user.getUsername());
+            profile.put("user_id", user.getId());
+            profile.put("ministries", ministries);
+            profile.put("permissions", rolePermissionses);
+            for (HealthMinistry ministry : user.getMinistries()) {
+                ministries.add(ministry.getId());
+            }
+            getSession().put("userProfile", profile);
 
             Map session = new HashMap<String, Object>();
             session.put("authentication", rolePermissionses);
