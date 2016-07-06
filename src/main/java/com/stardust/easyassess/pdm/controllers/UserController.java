@@ -118,14 +118,18 @@ public class UserController extends AbstractMaintenanceController<User>  {
                 }
             }
 
-            Map<String, Object> profile = new HashedMap();
+            Map<String, Object> profile = new HashMap();
+            Map<Long, String> ministryMap = new HashMap();
             List<Long> ministries = new ArrayList();
             profile.put("username", user.getUsername());
             profile.put("user_id", user.getId());
             profile.put("ministries", ministries);
+            profile.put("ministryMap", ministryMap);
             profile.put("permissions", rolePermissionses);
+
             for (HealthMinistry ministry : user.getMinistries()) {
                 ministries.add(ministry.getId());
+                ministryMap.put(ministry.getId(), ministry.getName());
             }
             getSession().put("userProfile", profile);
 
