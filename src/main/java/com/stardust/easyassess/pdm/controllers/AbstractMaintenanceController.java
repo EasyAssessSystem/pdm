@@ -157,4 +157,13 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
     protected ViewJSONWrapper createEmptyResult() {
         return new ViewJSONWrapper(new Message("无记录"), ResultCode.NOT_FOUND);
     }
+
+    protected Map<String, Object> getUserProfile() {
+        Map<String, Object> profile = (Map<String, Object>)getSession().get("userProfile");
+        if (profile == null) {
+            profile = new HashMap<String, Object>();
+        }
+
+        return profile;
+    }
 }
