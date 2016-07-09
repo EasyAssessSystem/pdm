@@ -18,7 +18,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,8 @@ public class AuthenticationAspect {
         ContextSession session = applicationContext.getBean(ContextSession.class);
         if (!pjp.toString().contains("com.stardust.easyassess.pdm.controllers.UserController.verify")
                 && session.get("userProfile") == null) {
+            session.clear();
+            clearCookie();
             result = new ViewJSONWrapper(new Message("503"), ResultCode.FAILED);
         } else {
             result = pjp.proceed();
@@ -87,5 +91,14 @@ public class AuthenticationAspect {
     @AfterThrowing(pointcut = "controllerRequest()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Throwable e) throws Throwable {
 
+    }
+
+    private void clearCookie() {
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+        HttpServletResponse response = sra.getResponse();
+        Cookie cookie = new Cookie("SESSION", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }

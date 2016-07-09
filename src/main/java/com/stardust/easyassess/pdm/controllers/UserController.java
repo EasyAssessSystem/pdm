@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
@@ -66,8 +68,12 @@ public class UserController extends AbstractMaintenanceController<User>  {
     }
 
     @RequestMapping(value="/session/logoff", method={RequestMethod.GET})
-    public ViewJSONWrapper logoff() {
+    public ViewJSONWrapper logoff(HttpServletResponse response) {
+        Cookie cookie = new Cookie("SESSION", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         getSession().remove("userProfile");
+        getSession().clear();
         return new ViewJSONWrapper(new Message("退出成功"), ResultCode.SUCC);
     }
 
