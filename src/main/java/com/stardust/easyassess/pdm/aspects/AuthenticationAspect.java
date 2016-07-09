@@ -2,9 +2,10 @@ package com.stardust.easyassess.pdm.aspects;
 
 
 import com.stardust.easyassess.core.context.ContextSession;
-import com.stardust.easyassess.core.security.RolePermissions;
+import com.stardust.easyassess.core.presentation.Message;
+import com.stardust.easyassess.core.presentation.ResultCode;
+import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.pdm.common.AuthenticationProxy;
-import com.stardust.easyassess.pdm.models.User;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -43,6 +44,18 @@ public class AuthenticationAspect {
     public void controllerRequest() {
     }
 
+    @Around("controllerRequest()")
+    public Object aroundControllerRequest(ProceedingJoinPoint pjp) throws Throwable {
+        Object result = null;
+        ContextSession session = applicationContext.getBean(ContextSession.class);
+        if (!pjp.toString().contains("com.stardust.easyassess.pdm.controllers.UserController.verify")
+                && session.get("userProfile") == null) {
+            result = new ViewJSONWrapper(new Message("503"), ResultCode.FAILED);
+        } else {
+            result = pjp.proceed();
+        }
+        return result;
+    }
 
     @Before("controllerRequest()")
     public void doBefore(JoinPoint joinPoint) throws Throwable  {
