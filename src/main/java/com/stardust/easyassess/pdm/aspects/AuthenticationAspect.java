@@ -51,6 +51,7 @@ public class AuthenticationAspect {
         Object result = null;
         ContextSession session = applicationContext.getBean(ContextSession.class);
         if (!pjp.toString().contains("com.stardust.easyassess.pdm.controllers.UserController.verify")
+                && !pjp.toString().contains("com.stardust.easyassess.pdm.controllers.AuthenticationController.refresh")
                 && session.get("userProfile") == null) {
             session.clear();
             clearCookie();
