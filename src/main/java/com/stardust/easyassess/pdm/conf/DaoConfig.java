@@ -4,8 +4,6 @@ package com.stardust.easyassess.pdm.conf;
 import com.stardust.easyassess.pdm.dao.router.MultitenantDataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +24,7 @@ import java.util.Properties;
 public class DaoConfig {
 
     @Autowired
-    private DataSourceProperties properties;
+    private DataSourceProperties dataSourceProperties;
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
@@ -38,28 +36,13 @@ public class DaoConfig {
 
         for(Resource propertyFile : resources) {
             Properties tenantProperties = new Properties();
-            //DataSourceBuilder dataSourceBuilder = new DataSourceBuilder(this.getClass().getClassLoader());
-
             try {
                 tenantProperties.load(propertyFile.getInputStream());
-
                 String tenantId = tenantProperties.getProperty("name");
-
-//                dataSourceBuilder.driverClassName(properties.getDriverClassName())
-//                        .url(tenantProperties.getProperty("datasource.url"))
-//                        .username(tenantProperties.getProperty("datasource.username"))
-//                        .password(tenantProperties.getProperty("datasource.password"));
-//
-//                if(properties.getType() != null) {
-//                    dataSourceBuilder.type(properties.getType());
-//                }
-//
-//                resolvedDataSources.put(tenantId, dataSourceBuilder.build());
-                  resolvedDataSources.put(tenantId,
-                          createPooledDataSource(properties.getDriverClassName(),
-                                                 tenantProperties.getProperty("datasource.url"),
-                                                 tenantProperties.getProperty("datasource.username"),
-                                                 tenantProperties.getProperty("datasource.password")));
+                resolvedDataSources.put(tenantId, createPooledDataSource(dataSourceProperties.getDriverClass(),
+                                                  tenantProperties.getProperty("datasource.url"),
+                                                  tenantProperties.getProperty("datasource.username"),
+                                                  tenantProperties.getProperty("datasource.password")));
             } catch (IOException e) {
                 e.printStackTrace();
 
@@ -77,48 +60,37 @@ public class DaoConfig {
     }
 
     private DataSource defaultDataSource() {
-//        DataSourceBuilder dataSourceBuilder = new DataSourceBuilder(this.getClass().getClassLoader())
-//                .driverClassName(properties.getDriverClassName())
-//                .url(properties.getUrl())
-//                .username(properties.getUsername())
-//                .password(properties.getPassword());
-//        if(properties.getType() != null) {
-//            dataSourceBuilder.type(properties.getType());
-//        }
-//
-//        return dataSourceBuilder.build();
-        return createPooledDataSource(properties.getDriverClassName(),
-                properties.getUrl(),
-                properties.getUsername(),
-                properties.getPassword());
+        return createPooledDataSource(dataSourceProperties.getDriverClass(),
+                dataSourceProperties.getUrl(),
+                dataSourceProperties.getUsername(),
+                dataSourceProperties.getPassword());
     }
 
-    private org.apache.tomcat.jdbc.pool.DataSource createPooledDataSource(String driver,
-                                                                          String url,
-                                                                          String username,
-                                                                          String password) {
+    private DataSource createPooledDataSource(String driver,
+                                              String url,
+                                              String username,
+                                              String password) {
         PoolProperties poolProperties = new PoolProperties();
         poolProperties.setDriverClassName(driver);
         poolProperties.setUrl(url);
         poolProperties.setUsername(username);
         poolProperties.setPassword(password);
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource(poolProperties);
-        dataSource.setValidationQuery("SELECT 1");
-        dataSource.setMaxActive(100);
-        dataSource.setTestWhileIdle(true);
-        dataSource.setTestOnBorrow(true);
-        dataSource.setTimeBetweenEvictionRunsMillis(20000);
-        dataSource.setMinEvictableIdleTimeMillis(28700);
+        dataSource.setValidationQuery(dataSourceProperties.getValidationQuery());
+        dataSource.setMaxActive(dataSourceProperties.getMaxActive());
+        dataSource.setTestWhileIdle(dataSourceProperties.getTestWhileIdle());
+        dataSource.setTestOnBorrow(dataSourceProperties.getTestOnBorrow());
+        dataSource.setTimeBetweenEvictionRunsMillis(dataSourceProperties.getTimeBetweenEvictionRunsMillis());
+        dataSource.setMinEvictableIdleTimeMillis(dataSourceProperties.getMinEvictableIdleTimeMillis());
+
         return dataSource;
     }
 
 
     @Bean
     public EntityManagerFactory entityManagerFactory() throws IOException {
-
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.stardust.easyassess.pdm.models");
