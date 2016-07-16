@@ -3,7 +3,7 @@
 service_name=easyassess-pdm
 host_address=192.168.0.21
 host_port=8180
-operation_port=8181
+operation_port=8180
 uid=root
 jar_home=/root/.jenkins/workspace/PDM/
 api_service_path=/usr/esapp/api-services
