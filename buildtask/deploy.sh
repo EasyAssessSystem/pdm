@@ -14,14 +14,10 @@ function package()
 
 function startup()
 {
-    if (( $(ps -ef | grep -v grep | grep $service_name | wc -l) > 0 ))
-    then
-        echo "$service_name is shutting down!!!"
-        curl -X POST http://$host_address:$host_port/shutdown
-    else
-        echo "$service_name is not running. skip shutdown process!!!"
-    fi
-
+    response=$(curl --write-out %{http_code} --silent --output /dev/null http://$host_address:$host_port/default/data/user/0)
+    echo $response
+    echo "shutting down http://$host_address:$host_port"
+    curl -X POST http://$host_address:$host_port/shutdown
     ssh $uid@$host_address nohup java -jar $api_service_path/easyassess-pdm-0.0.1.jar &
 }
 
