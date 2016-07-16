@@ -9,20 +9,20 @@ api_service_path=/usr/esapp/api-services
 
 function package()
 {
+    echo "building package"
     mvn -Dmaven.test.failure.ignore clean install
 }
 
 function startup()
 {
-    response=$(curl --write-out %{http_code} --silent --output /dev/null http://$host_address:$host_port/default/data/user/0)
-    echo $response
     echo "shutting down http://$host_address:$host_port"
     curl -X POST http://$host_address:$host_port/shutdown
-    ssh $uid@$host_address nohup java -jar $api_service_path/easyassess-pdm-0.0.1.jar &
+    ssh $uid@$host_address nohup java -jar $api_service_path/easyassess-pdm-0.0.1.jar
 }
 
 function deploy()
 {
+    echo "deploying package to server"
     scp $jar_home/target/easyassess-pdm-0.0.1.jar $uid@$host_address:$api_service_path
 }
 
