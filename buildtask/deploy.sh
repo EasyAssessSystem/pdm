@@ -3,6 +3,7 @@
 service_name=easyassess-pdm
 host_address=192.168.0.21
 host_port=8180
+operation_port=8181
 uid=root
 jar_home=/root/.jenkins/workspace/PDM/
 api_service_path=/usr/esapp/api-services
@@ -15,8 +16,8 @@ function package()
 
 function startup()
 {
-    echo "shutting down http://$host_address:$host_port"
-    curl -X POST http://$host_address:$host_port/shutdown
+    echo "shutting down http://$host_address:$operation_port"
+    curl -X POST http://$host_address:$operation_port/shutdown
     ssh $uid@$host_address java -jar $api_service_path/easyassess-pdm-0.0.1.jar &
 }
 
