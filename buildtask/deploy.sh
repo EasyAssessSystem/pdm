@@ -15,7 +15,8 @@ function package()
 
 function startup()
 {
-    ssh $uid@$host_address service pdm start &
+    export PDM_ENV="prod"
+    ssh $uid@$host_address service pdm start
 }
 
 function deploy()
