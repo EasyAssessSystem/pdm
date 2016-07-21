@@ -15,7 +15,7 @@ function package()
 
 function startup()
 {
-    ssh $uid@$host_address service pdm start
+    ssh $uid@$host_address service pdm start &
 }
 
 function deploy()
