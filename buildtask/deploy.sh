@@ -15,13 +15,13 @@ function package()
 
 function startup()
 {
-    ssh $uid@$host_address service pdm start
+    ssh $uid@$host_address /etc/init.d/pdm start
 }
 
 function deploy()
 {
     echo "shutting down http://$host_address:$host_port"
-    ssh $uid@$host_address service pdm stop
+    ssh $uid@$host_address /etc/init.d/pdm stop
     echo "deploying package to server"
     scp $jar_home/target/easyassess-pdm-0.0.1.jar $uid@$host_address:$api_service_path
 }
