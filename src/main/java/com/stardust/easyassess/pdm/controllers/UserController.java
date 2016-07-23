@@ -8,15 +8,12 @@ import com.stardust.easyassess.pdm.common.AuthenticationProxy;
 import com.stardust.easyassess.pdm.models.HealthMinistry;
 import com.stardust.easyassess.pdm.models.Role;
 import com.stardust.easyassess.pdm.models.User;
-import org.apache.commons.collections.iterators.ObjectArrayIterator;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.util.ArrayList;
