@@ -34,6 +34,7 @@ bash db-schema/upgrade.sh
 ```
 ### 5. Build and start service
 ```sh
+export ES_ENV=dev
 mvn clean install
 java -jar target/easyassess-pdm-0.0.1.jar
 ```
