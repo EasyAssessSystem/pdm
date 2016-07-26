@@ -40,7 +40,7 @@ java -jar target/easyassess-pdm-0.0.1.jar
 ```
 NOTE: If you run service from IntelliJ, you need to set env value in your launch configuration
 
-### 5. CI
+### 6. CI
 http://103.227.51.161:1338/job/PDM/
 
 
