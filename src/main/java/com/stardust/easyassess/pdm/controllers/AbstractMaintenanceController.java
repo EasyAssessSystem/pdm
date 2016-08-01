@@ -1,9 +1,11 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.core.exception.ESAppException;
 import com.stardust.easyassess.core.presentation.*;
 import com.stardust.easyassess.core.query.Selection;
 import com.stardust.easyassess.pdm.common.ListSelectionBuilder;
 import com.stardust.easyassess.pdm.common.ViewContext;
+import com.stardust.easyassess.pdm.exceptions.DuplicatedKeyException;
 import com.stardust.easyassess.pdm.models.DataModel;
 import com.stardust.easyassess.pdm.services.MaintenanceService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -40,7 +42,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
 
     @RequestMapping(value = "/{id}",
             method={RequestMethod.GET})
-    public ViewJSONWrapper get(@PathVariable long id) {
+    public ViewJSONWrapper get(@PathVariable long id) throws ESAppException {
         if (preGet(id)) {
             return postGet(getService().get(id));
         } else {
@@ -55,7 +57,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
                            @RequestParam(value = "size", defaultValue = "4") Integer size,
                            @RequestParam(value = "sort", defaultValue = "id") String sort,
                            @RequestParam(value = "filterField", defaultValue = "") String field,
-                           @RequestParam(value = "filterValue", defaultValue = "") String value ) {
+                           @RequestParam(value = "filterValue", defaultValue = "") String value ) throws ESAppException {
 
         return this.list(page, size, sort, field, value , null);
     }
@@ -67,7 +69,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
                                 @RequestParam(value = "sort", defaultValue = "id") String sort,
                                 @RequestParam(value = "filterField", defaultValue = "") String field,
                                 @RequestParam(value = "filterValue", defaultValue = "") String value,
-                                @PathVariable String subset) {
+                                @PathVariable String subset) throws ESAppException {
 
         List<Selection> selections = new ArrayList<Selection>();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
@@ -86,7 +88,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
     @ResponseBody
     @RequestMapping(value="{id}", method={RequestMethod.PUT})
     public ViewJSONWrapper update(@PathVariable long id,
-                            @RequestBody T model) {
+                            @RequestBody T model) throws ESAppException {
         ((DataModel)model).setId(id);
         if (preUpdate(id, model)) {
             return postUpdate(getService().save(model));
@@ -97,7 +99,7 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
 
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
-    public ViewJSONWrapper add(@RequestBody T model) {
+    public ViewJSONWrapper add(@RequestBody T model) throws ESAppException {
         if (preAdd(model)) {
             return postAdd(getService().save(model));
         } else {
@@ -107,50 +109,50 @@ public abstract class AbstractMaintenanceController<T> extends ActionController 
 
     @ResponseBody
     @RequestMapping(value="{id}", method={RequestMethod.DELETE})
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws ESAppException {
         if (preDelete(id)) {
             getService().remove(id);
             postDelete(id);
         }
     }
 
-    protected boolean preGet(long id) {
+    protected boolean preGet(long id) throws ESAppException {
         return true;
     }
 
-    protected ViewJSONWrapper postGet(T model) {
+    protected ViewJSONWrapper postGet(T model) throws ESAppException {
         return new ViewJSONWrapper(model);
     }
 
-    protected boolean preList(List<Selection> selections) {
+    protected boolean preList(List<Selection> selections) throws ESAppException {
         return true;
     }
 
-    protected ViewJSONWrapper postList(Page<T> page) {
+    protected ViewJSONWrapper postList(Page<T> page) throws ESAppException {
         return new ViewJSONWrapper(page);
     }
 
-    protected boolean preDelete(long id) {
+    protected boolean preDelete(long id) throws ESAppException {
         return true;
     }
 
-    protected void postDelete(long id) {
+    protected void postDelete(long id) throws ESAppException {
 
     }
 
-    protected boolean preUpdate(long id, T model) {
+    protected boolean preUpdate(long id, T model) throws ESAppException {
         return ((DataModel)model).validate();
     }
 
-    protected ViewJSONWrapper postUpdate(T model) {
+    protected ViewJSONWrapper postUpdate(T model) throws ESAppException {
         return new ViewJSONWrapper(model);
     }
 
-    protected boolean preAdd(T model) {
+    protected boolean preAdd(T model) throws ESAppException {
         return ((DataModel)model).validate();
     }
 
-    protected ViewJSONWrapper postAdd(T model) {
+    protected ViewJSONWrapper postAdd(T model) throws ESAppException {
         return new ViewJSONWrapper(model);
     }
 

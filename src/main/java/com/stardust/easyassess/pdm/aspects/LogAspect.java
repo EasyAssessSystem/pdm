@@ -1,5 +1,6 @@
 package com.stardust.easyassess.pdm.aspects;
 
+import com.stardust.easyassess.core.exception.MessageException;
 import com.stardust.easyassess.core.presentation.*;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
@@ -59,6 +60,8 @@ public class LogAspect {
         Object result = null;
         try {
             result = pjp.proceed();
+        } catch (MessageException e) {
+            result = new ViewJSONWrapper(new Message(e.getMessage()), ResultCode.FAILED);
         } catch (Exception e) {
             logger.error(e.getMessage());
             result = new ViewJSONWrapper(new Message("Error:" + e.getMessage()), ResultCode.FAILED);e.printStackTrace();

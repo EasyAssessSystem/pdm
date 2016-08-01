@@ -1,5 +1,6 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.core.exception.ESAppException;
 import com.stardust.easyassess.core.presentation.*;
 import com.stardust.easyassess.core.security.APIAuthentication;
 import com.stardust.easyassess.core.security.Permission;
@@ -36,7 +37,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
     private AuthenticationProxy authenticationProxy;
 
     @Override
-    protected boolean preUpdate(long id, User model) {
+    protected boolean preUpdate(long id, User model) throws ESAppException {
         super.preUpdate(id, model);
         User user = getService().get(model.getId());
 
@@ -48,7 +49,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
     }
 
     @Override
-    protected boolean preAdd(User model) {
+    protected boolean preAdd(User model) throws ESAppException {
         model.setPassword(encryption(model.getPassword()));
         return true;
     }
@@ -65,7 +66,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
     }
 
     @RequestMapping(value="/session/logoff", method={RequestMethod.GET})
-    public ViewJSONWrapper logoff(HttpServletResponse response) {
+    public ViewJSONWrapper logoff(HttpServletResponse response) throws ESAppException {
         Cookie cookie = new Cookie("SESSION", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
@@ -77,7 +78,7 @@ public class UserController extends AbstractMaintenanceController<User>  {
     @RequestMapping(value="/session/{username}/{password}", method={RequestMethod.GET})
     public ViewJSONWrapper verify(@PathVariable String username,
                                   @PathVariable String password,
-                                  @PathVariable String domain) {
+                                  @PathVariable String domain) throws ESAppException {
         ViewJSONWrapper jsonWrapper;
         User user = null;
 

@@ -1,5 +1,6 @@
 package com.stardust.easyassess.pdm.controllers;
 
+import com.stardust.easyassess.core.exception.ESAppException;
 import com.stardust.easyassess.core.security.RolePermissions;
 import com.stardust.easyassess.pdm.common.AuthenticationProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,20 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/refresh",
             method={RequestMethod.GET})
-    public void refresh() {
+    public void refresh() throws ESAppException {
         proxy.fetch();
     }
 
     @ResponseBody
     @RequestMapping(value = "/get/{role}",
             method={RequestMethod.GET})
-    public RolePermissions get(@PathVariable long role) {
+    public RolePermissions get(@PathVariable long role) throws ESAppException {
         return proxy.getRolePermissions(role);
     }
 
     @RequestMapping(value = "/update",
             method={RequestMethod.PUT})
-    public void update(@RequestBody RolePermissions permissions) {
+    public void update(@RequestBody RolePermissions permissions) throws ESAppException {
         proxy.saveRolePermissions(permissions);
     }
 }

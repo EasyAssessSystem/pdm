@@ -3,6 +3,8 @@ package com.stardust.easyassess.pdm.services;
 import com.stardust.easyassess.core.query.Selection;
 import com.stardust.easyassess.pdm.common.ViewContext;
 import com.stardust.easyassess.pdm.dao.repositories.DataRepository;
+import com.stardust.easyassess.pdm.exceptions.DuplicatedKeyException;
+import com.stardust.easyassess.pdm.models.DataModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +41,21 @@ public abstract class EntityService<T> implements MaintenanceService<T> {
         return getRepository().findAll(pageable, selections);
     }
 
-    public T save(T model) {
+    public T save(T model) throws DuplicatedKeyException {
+        DataModel dataModel = (DataModel)model;
+        String keyField = getRepository().getKeyField();
+        if (dataModel.getId().compareTo(new Long(0)) < 0
+                && keyField != null
+                && !keyField.isEmpty()) {
+            Object keyVal = dataModel.get$(keyField);
+            if (keyVal != null) {
+                T m = this.get(keyVal.toString());
+                if (m != null && ((DataModel)m).getId().compareTo(new Long(0)) > 0) {
+                    throw new DuplicatedKeyException(keyVal.toString());
+                }
+            }
+        }
+
         return getRepository().save(model);
     }
 
