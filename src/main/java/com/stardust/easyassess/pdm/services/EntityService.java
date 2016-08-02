@@ -44,13 +44,12 @@ public abstract class EntityService<T> implements MaintenanceService<T> {
     public T save(T model) throws DuplicatedKeyException {
         DataModel dataModel = (DataModel)model;
         String keyField = getRepository().getKeyField();
-        if (dataModel.getId().compareTo(new Long(0)) < 0
-                && keyField != null
+        if (keyField != null
                 && !keyField.isEmpty()) {
             Object keyVal = dataModel.get$(keyField);
             if (keyVal != null) {
                 T m = this.get(keyVal.toString());
-                if (m != null && ((DataModel)m).getId().compareTo(new Long(0)) > 0) {
+                if (m != null && ((DataModel)m).getId().compareTo(dataModel.getId()) != 0) {
                     throw new DuplicatedKeyException(keyVal.toString());
                 }
             }
