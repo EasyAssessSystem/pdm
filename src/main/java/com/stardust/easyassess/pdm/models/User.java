@@ -11,6 +11,8 @@ public class User extends DataModel {
 
     private String name;
 
+    private String phone;
+
     private String status;
 
     private String username;
@@ -41,6 +43,14 @@ public class User extends DataModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getStatus() {

@@ -18,7 +18,41 @@ public class HealthMinistry extends DataModel {
 
     private String type = "C";
 
+    private String address;
+
+    private String province;
+
+    private String city;
+
+    private String district;
+
+    private String zipcode;
+
     private String status;
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
 
     @JsonBackReference
     private HealthMinistry supervisor;
@@ -105,5 +139,21 @@ public class HealthMinistry extends DataModel {
             return getSupervisor().getName();
         }
         return null;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
