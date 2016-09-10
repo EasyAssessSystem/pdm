@@ -6,6 +6,7 @@ import com.stardust.easyassess.core.security.APIAuthentication;
 import com.stardust.easyassess.core.security.Permission;
 import com.stardust.easyassess.core.security.RolePermissions;
 import com.stardust.easyassess.pdm.common.AuthenticationProxy;
+import com.stardust.easyassess.pdm.models.DataModel;
 import com.stardust.easyassess.pdm.models.HealthMinistry;
 import com.stardust.easyassess.pdm.models.Role;
 import com.stardust.easyassess.pdm.models.User;
@@ -51,6 +52,23 @@ public class UserController extends AbstractMaintenanceController<User>  {
     protected boolean preAdd(User model) throws ESAppException {
         model.setPassword(encryption(model.getPassword()));
         return true;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/profile", method={RequestMethod.PUT})
+    public ViewJSONWrapper updateProfile(@RequestBody User model) throws ESAppException {
+        Map<String, Object> profile = getUserProfile();
+        if (profile != null) {
+            model.setId((Long) profile.get("user_id"));
+            model.setUsername(profile.get("username").toString());
+            if (preUpdate(model.getId(), model)) {
+                return postUpdate(getService().save(model));
+            } else {
+                return createEmptyResult();
+            }
+        } else {
+            return createEmptyResult();
+        }
     }
 
     private String encryption(String password) {
