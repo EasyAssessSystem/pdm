@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,25 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class HealthMinistryController extends AbstractMaintenanceController<HealthMinistry>  {
     private String iqcServiceHost = "http://127.0.0.1:9290/default/iqc/plan/owner";
+
+    @ResponseBody
+    @RequestMapping(value = "/myministry", method = {RequestMethod.PUT})
+    public ViewJSONWrapper updateSelfProfile(@RequestBody HealthMinistry model) throws ESAppException {
+        Map<String, Object> profile = getUserProfile();
+        if (profile != null) {
+            List<Long> ministries = (List<Long>) profile.get("ministries");
+            if (ministries.contains(model.getId())) {
+                if (preUpdate(model.getId(), model)) {
+                    return postUpdate(getService().save(model));
+                } else {
+                    return createEmptyResult();
+                }
+            } else throw new ESAppException("Permission Denied", 403);
+        } else {
+            return createEmptyResult();
+        }
+
+    }
 
     @Override
     protected String getModelName() {
@@ -52,8 +72,8 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
         listSelectionBuilders.put("affiliated", new ListSelectionBuilder() {
             @Override
             public List<Selection> buildSelections(List<Selection> selections, ViewContext context) {
-                List<Long> ministries = (List<Long>)getUserProfile().get("ministries");
-                Map<Long, String> ministryMap = (Map<Long, String>)getUserProfile().get("ministryMap");
+                List<Long> ministries = (List<Long>) getUserProfile().get("ministries");
+                Map<Long, String> ministryMap = (Map<Long, String>) getUserProfile().get("ministryMap");
                 if (ministries != null && ministries.size() > 0 && ministryMap != null) {
                     selections.add(new Selection("id", Selection.Operator.EQUAL, ministries.get(0)));
                 }
