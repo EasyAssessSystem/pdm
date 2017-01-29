@@ -7,3 +7,4 @@ COPY ./target/easyassess-pdm-0.0.1.jar /app/target
 COPY ./buildtask/entrypoint.sh /app/
 WORKDIR /app/
 EXPOSE 8180 8180
+CMD ["./entrypoint.sh"]
