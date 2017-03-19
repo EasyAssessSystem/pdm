@@ -59,6 +59,7 @@ public class DataImportService {
 
                 HealthMinistry ministry = ministryRepository.findBykey(name.getContents());
                 if (ministry == null) {
+                    ministry = new HealthMinistry();
                     ministry.setName(name.getContents());
                     ministry.setAddress(address.getContents());
                     ministry.setCity(city.getContents());
