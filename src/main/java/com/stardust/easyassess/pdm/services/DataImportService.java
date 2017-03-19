@@ -57,45 +57,46 @@ public class DataImportService {
                 Cell password = sheet.getCell(12, i);
                 Cell supervisor = sheet.getCell(13, i);
 
-                HealthMinistry ministry = new HealthMinistry();
-                ministry.setName(name.getContents());
-                ministry.setAddress(address.getContents());
-                ministry.setCity(city.getContents());
-                ministry.setDistrict(district.getContents());
-                ministry.setProvince(province.getContents());
-                ministry.setStatus("A");
-                ministry.setZipcode(zipCode.getContents());
-                ministry.setType("C");
+                HealthMinistry ministry = ministryRepository.findBykey(name.getContents());
+                if (ministry == null) {
+                    ministry.setName(name.getContents());
+                    ministry.setAddress(address.getContents());
+                    ministry.setCity(city.getContents());
+                    ministry.setDistrict(district.getContents());
+                    ministry.setProvince(province.getContents());
+                    ministry.setStatus("A");
+                    ministry.setZipcode(zipCode.getContents());
+                    ministry.setType("C");
 
-                if (supervisor != null && supervisor.getContents() != null && !supervisor.getContents().isEmpty()) {
-                    HealthMinistry superMinistry = ministryRepository.findBykey(supervisor.getContents());
-                    if (superMinistry != null) {
-                        superMinistry.getMinistries().add(ministry);
-                        ministry.setSupervisor(superMinistry);
+                    if (supervisor != null && supervisor.getContents() != null && !supervisor.getContents().isEmpty()) {
+                        HealthMinistry superMinistry = ministryRepository.findBykey(supervisor.getContents());
+                        if (superMinistry != null) {
+                            superMinistry.getMinistries().add(ministry);
+                            ministry.setSupervisor(superMinistry);
+                        }
                     }
+                    ministryRepository.save(ministry);
+
+                    User user = new User();
+
+
+                    List<Role> roleList = new ArrayList();
+                    List<HealthMinistry> ministryList = new ArrayList();
+                    ministryList.add(ministry);
+                    Role userRole = roleRepository.findBykey(role.getContents());
+                    roleList.add(userRole);
+
+                    user.setUsername(username.getContents());
+                    user.setStatus("A");
+                    user.setPassword(password.getContents());
+                    user.setRoles(roleList);
+                    user.setMinistries(ministryList);
+                    user.setCanLaunchAssessment(false);
+                    user.setName(contact.getContents().trim().isEmpty() ? "机构联系人" : contact.getContents());
+                    user.setPhone(phone.getContents());
+                    userRepository.save(user);
+                    results.put(i, user);
                 }
-                ministryRepository.save(ministry);
-
-                User user = new User();
-
-
-                List<Role> roleList = new ArrayList();
-                List<HealthMinistry> ministryList = new ArrayList();
-                ministryList.add(ministry);
-                Role userRole = roleRepository.findBykey(role.getContents());
-                roleList.add(userRole);
-
-                user.setUsername(username.getContents());
-                user.setStatus("A");
-                user.setPassword(password.getContents());
-                user.setRoles(roleList);
-                user.setMinistries(ministryList);
-                user.setCanLaunchAssessment(false);
-                user.setName(contact.getContents().trim().isEmpty() ? "机构联系人" : contact.getContents());
-                user.setPhone(phone.getContents());
-                userRepository.save(user);
-                results.put(i, user);
-
 
 
 //                HealthMinistry ministry = ministryRepository.findBykey(name.getContents());
