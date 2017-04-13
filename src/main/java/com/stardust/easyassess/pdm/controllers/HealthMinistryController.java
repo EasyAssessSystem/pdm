@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping({"{domain}/data/ministry"})
 @EnableAutoConfiguration
 public class HealthMinistryController extends AbstractMaintenanceController<HealthMinistry>  {
-    private String iqcServiceHost = "http://127.0.0.1:9290/default/iqc/plan/owner";
+    private String iqcServiceHost = "http://www.thethirdqc.com/default/iqc/plan/owner";
 
     @ResponseBody
     @RequestMapping(value = "/myministry", method = {RequestMethod.PUT})
