@@ -24,6 +24,8 @@ import java.util.Map;
 public class HealthMinistryController extends AbstractMaintenanceController<HealthMinistry>  {
     private String iqcServiceHost = "http://www.thethirdqc.com/default/iqc/plan/owner";
 
+    private String formServiceHost = "http://www.thethirdqc.com/default/assess/form/owner";
+
     @ResponseBody
     @RequestMapping(value = "/myministry", method = {RequestMethod.PUT})
     public ViewJSONWrapper updateSelfProfile(@RequestBody HealthMinistry model) throws ESAppException {
@@ -55,6 +57,7 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
         requestHeaders.add("Cookie", "SESSION=" + getSession().getSessionKey());
         HttpEntity<HealthMinistry> request = new HttpEntity(model, requestHeaders);
         client.exchange(iqcServiceHost , HttpMethod.PUT, request, Void.class);
+        client.exchange(formServiceHost , HttpMethod.PUT, request, Void.class);
         return super.postUpdate(model);
     }
 
