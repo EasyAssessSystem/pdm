@@ -3,6 +3,7 @@ package com.stardust.easyassess.pdm.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -104,6 +105,8 @@ public class HealthMinistry extends DataModel {
         this.supervisor = supervisor;
     }
 
+    @SortNatural
+    @OrderBy("name ASC")
     @OneToMany(fetch = FetchType.LAZY,
                mappedBy="supervisor",
                //orphanRemoval = true,
