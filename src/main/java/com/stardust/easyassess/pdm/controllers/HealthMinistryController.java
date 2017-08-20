@@ -1,11 +1,13 @@
 package com.stardust.easyassess.pdm.controllers;
 
 import com.stardust.easyassess.core.exception.ESAppException;
+import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.pdm.common.ListSelectionBuilder;
 import com.stardust.easyassess.core.query.Selection;
 import com.stardust.easyassess.pdm.common.ViewContext;
 import com.stardust.easyassess.pdm.models.HealthMinistry;
+import com.stardust.easyassess.pdm.services.HealthMinistryService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +15,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +29,22 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
     private String iqcServiceHost = "http://www.thethirdqc.com/default/iqc/plan/owner";
 
     private String formServiceHost = "http://www.thethirdqc.com/default/assess/form/owner";
+
+    @RequestMapping(path="/{id}/logo",
+            method={RequestMethod.POST})
+    public ViewJSONWrapper uploadLogo(@PathVariable Long id, @RequestParam("logo") MultipartFile file) throws IOException {
+        if(!file.isEmpty()) {
+            String fileType=file.getOriginalFilename();
+            if (fileType.contains(".")) {
+                String[] parts = fileType.split("\\.");
+                fileType = parts[parts.length - 1];
+            }
+            String link = ((HealthMinistryService)getService()).uploadLogo(id, fileType, file.getInputStream());
+            return new ViewJSONWrapper(link);
+        }
+
+        return new ViewJSONWrapper(null);
+    }
 
     @ResponseBody
     @RequestMapping(value = "/myministry", method = {RequestMethod.PUT})

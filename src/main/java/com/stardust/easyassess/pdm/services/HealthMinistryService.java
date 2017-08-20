@@ -1,5 +1,6 @@
 package com.stardust.easyassess.pdm.services;
 
+import com.stardust.easyassess.pdm.common.OSSBucketAccessor;
 import com.stardust.easyassess.pdm.common.ViewContext;
 import com.stardust.easyassess.pdm.dao.repositories.DataRepository;
 import com.stardust.easyassess.pdm.dao.repositories.HealthMinistryRepository;
@@ -7,6 +8,8 @@ import com.stardust.easyassess.pdm.models.HealthMinistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
 
 
 @Service("healthMinistryService")
@@ -39,5 +42,19 @@ public class HealthMinistryService extends EntityService<HealthMinistry> {
         }
 
         return getRepository().save(model);
+    }
+
+    public String uploadLogo(Long ministryId, String fileType, InputStream inputStream) {
+        HealthMinistry ministry = healthMinistryRepository.findOne(ministryId);
+        if (ministry != null) {
+            String filename = "health_ministry_" + ministryId + "_logo." + fileType;
+            String link = (new OSSBucketAccessor()).put("assess-bucket", "ministry-logo/" + filename, inputStream);
+            if (link != null && !link.isEmpty()) {
+                ministry.setLogo(link);
+                healthMinistryRepository.save(ministry);
+            }
+            return link;
+        }
+        return null;
     }
 }

@@ -31,6 +31,8 @@ public class HealthMinistry extends DataModel {
 
     private String status;
 
+    private String logo;
+
     public String getProvince() {
         return province;
     }
@@ -144,6 +146,14 @@ public class HealthMinistry extends DataModel {
         return null;
     }
 
+    @Transient
+    public String getSupervisorLogo() {
+        if (getSupervisor() != null) {
+            return getSupervisor().getLogo();
+        }
+        return null;
+    }
+
     public String getZipcode() {
         return zipcode;
     }
@@ -158,5 +168,13 @@ public class HealthMinistry extends DataModel {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 }
