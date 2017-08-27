@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "health_ministries")
@@ -148,6 +149,11 @@ public class HealthMinistry extends DataModel {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @Transient
+    public List<String> getFormattedUsers() {
+        return getUsers().stream().map(u -> u.getUsername() + "(" + u.getName() + ")").collect(Collectors.toList());
     }
 
     @Transient
