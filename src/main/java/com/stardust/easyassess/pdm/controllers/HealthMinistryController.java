@@ -46,6 +46,17 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
         return new ViewJSONWrapper(null);
     }
 
+    @RequestMapping(path="/{id}/signature",
+            method={RequestMethod.POST})
+    public ViewJSONWrapper uploadSignature(@PathVariable Long id, @RequestParam("signature") MultipartFile file) throws IOException {
+        if(!file.isEmpty()) {
+            String link = ((HealthMinistryService)getService()).uploadSignature(id, file.getInputStream());
+            return new ViewJSONWrapper(link);
+        }
+
+        return new ViewJSONWrapper(null);
+    }
+
     @ResponseBody
     @RequestMapping(value = "/myministry", method = {RequestMethod.PUT})
     public ViewJSONWrapper updateSelfProfile(@RequestBody HealthMinistry model) throws ESAppException {

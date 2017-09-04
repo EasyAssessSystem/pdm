@@ -34,6 +34,8 @@ public class HealthMinistry extends DataModel {
 
     private String logo;
 
+    private String signature;
+
     private String level;
 
     private String category;
@@ -202,5 +204,13 @@ public class HealthMinistry extends DataModel {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

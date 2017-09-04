@@ -44,6 +44,20 @@ public class HealthMinistryService extends EntityService<HealthMinistry> {
         return getRepository().save(model);
     }
 
+    public String uploadSignature(Long ministryId, InputStream inputStream) {
+        HealthMinistry ministry = healthMinistryRepository.findOne(ministryId);
+        if (ministry != null) {
+            String filename = "signature_" + ministryId + ".png";
+            String link = (new OSSBucketAccessor()).put("assess-bucket", "ministry-signature/" + filename, inputStream);
+            if (link != null && !link.isEmpty()) {
+                ministry.setSignature(link);
+                healthMinistryRepository.save(ministry);
+            }
+            return link;
+        }
+        return null;
+    }
+
     public String uploadLogo(Long ministryId, String fileType, InputStream inputStream) {
         HealthMinistry ministry = healthMinistryRepository.findOne(ministryId);
         if (ministry != null) {
