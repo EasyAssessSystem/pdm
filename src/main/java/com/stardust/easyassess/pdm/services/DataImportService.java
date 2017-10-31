@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +91,7 @@ public class DataImportService {
 
                     user.setUsername(username.getContents());
                     user.setStatus("A");
-                    user.setPassword(password.getContents());
+                    user.setPassword(encryption(password.getContents()));
                     user.setRoles(roleList);
                     user.setMinistries(ministryList);
                     user.setCanLaunchAssessment(false);
@@ -137,6 +139,17 @@ public class DataImportService {
         }
 
         return results;
+    }
+
+    private String encryption(String password) {
+        try {
+            String hashed = DatatypeConverter.printHexBinary(
+                    MessageDigest.getInstance("MD5").digest(password.getBytes("UTF-8")));
+            return hashed;
+        } catch (Exception e) {
+
+        }
+        return password;
     }
 }
 
