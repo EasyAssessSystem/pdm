@@ -71,4 +71,27 @@ public class HealthMinistryService extends EntityService<HealthMinistry> {
         }
         return null;
     }
+
+    @Override
+    public void remove(HealthMinistry model) {
+        if (model.getMinistries() != null) {
+            for (HealthMinistry child : model.getMinistries()) {
+                child.setSupervisor(null);
+                save(model);
+            }
+        }
+        super.remove(model);
+    }
+
+    @Override
+    public void remove(Long id) {
+        HealthMinistry model = get(id);
+        if (model.getMinistries() != null) {
+            for (HealthMinistry child : model.getMinistries()) {
+                child.setSupervisor(null);
+                save(model);
+            }
+        }
+        super.remove(id);
+    }
 }
