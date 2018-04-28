@@ -86,7 +86,10 @@ public class HealthMinistryController extends AbstractMaintenanceController<Heal
         RestTemplate client = new RestTemplate();
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Cookie", "SESSION=" + getSession().getSessionKey());
-        HttpEntity<HealthMinistry> request = new HttpEntity(model, requestHeaders);
+        HealthMinistry owner = new HealthMinistry();
+        owner.setId(model.getId());
+        owner.setName(model.getName());
+        HttpEntity<HealthMinistry> request = new HttpEntity(owner, requestHeaders);
         client.exchange(iqcServiceHost , HttpMethod.PUT, request, Void.class);
         client.exchange(formServiceHost , HttpMethod.PUT, request, Void.class);
         return super.postUpdate(model);
