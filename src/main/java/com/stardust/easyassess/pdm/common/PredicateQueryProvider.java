@@ -5,6 +5,7 @@ import com.stardust.easyassess.core.query.*;
 import com.stardust.easyassess.core.query.Selection;
 
 import javax.persistence.criteria.*;
+import java.util.List;
 
 public class PredicateQueryProvider implements SelectionQueryProvider<Predicate> {
     private final Root<?> root;
@@ -51,7 +52,9 @@ public class PredicateQueryProvider implements SelectionQueryProvider<Predicate>
             case LIKE:
                 if (namePath.getJavaType().equals(String.class)) {
                     predicate = cb.like(namePath, "%" + selection.getValue() + "%");
-                } else {
+                } else if (namePath.getJavaType().equals(List.class)) {
+                    predicate = cb.isMember(selection.getValue(), namePath.getParentPath().get(selection.getProperty()));
+                }   else {
                     predicate = cb.equal(namePath, selection.getValue());
                 }
                 break;

@@ -3,6 +3,8 @@ package com.stardust.easyassess.pdm.controllers;
 import com.stardust.easyassess.core.query.Selection;
 import com.stardust.easyassess.pdm.common.ListSelectionBuilder;
 import com.stardust.easyassess.pdm.common.ViewContext;
+import com.stardust.easyassess.pdm.dao.repositories.AssayCategoryRepository;
+import com.stardust.easyassess.pdm.models.AssayCategory;
 import com.stardust.easyassess.pdm.models.AssayCode;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,10 +25,16 @@ public class AssayCodeController extends AbstractMaintenanceController<AssayCode
 
     @Override
     protected void initSelectionBuilders() {
+        AssayCategoryRepository categoryRepository = getApplicationContext().getBean(AssayCategoryRepository.class);
+
         listSelectionBuilders.put("categorized", new ListSelectionBuilder() {
             @Override
             public List<Selection> buildSelections(List<Selection> selections, ViewContext context) {
+                AssayCategory category = categoryRepository.findOne(context.getLong("category_id"));
                 selections.add(new Selection("group.id", Selection.Operator.EQUAL, context.getLong("group_id")));
+                if (category != null) {
+                    selections.add(new Selection("categories", Selection.Operator.LIKE, category));
+                }
                 return selections;
             }
         });
