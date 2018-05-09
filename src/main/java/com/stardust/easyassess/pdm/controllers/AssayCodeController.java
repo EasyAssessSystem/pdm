@@ -30,7 +30,7 @@ public class AssayCodeController extends AbstractMaintenanceController<AssayCode
         listSelectionBuilders.put("categorized", new ListSelectionBuilder() {
             @Override
             public List<Selection> buildSelections(List<Selection> selections, ViewContext context) {
-                AssayCategory category = categoryRepository.findOne(context.getLong("category_id"));
+                AssayCategory category = categoryRepository.getAssayCategoryByName(context.getString("category_name"));
                 selections.add(new Selection("group.id", Selection.Operator.EQUAL, context.getLong("group_id")));
                 if (category != null) {
                     selections.add(new Selection("categories", Selection.Operator.LIKE, category));

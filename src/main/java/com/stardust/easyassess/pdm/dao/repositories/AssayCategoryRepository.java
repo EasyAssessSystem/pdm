@@ -7,4 +7,6 @@ public interface AssayCategoryRepository extends DataRepository<AssayCategory, L
     default String getKeyField() {
         return "name";
     }
+
+    AssayCategory getAssayCategoryByName(String name);
 }
