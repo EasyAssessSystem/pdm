@@ -82,6 +82,21 @@ public class UserController extends AbstractMaintenanceController<User>  {
         return password;
     }
 
+    @RequestMapping(value="/session", method={RequestMethod.GET})
+    public ViewJSONWrapper getCurrentSession(@PathVariable String domain) throws ESAppException {
+        Map<String, Object> profile = (Map)getSession().get("userProfile");
+        if (profile != null && profile.containsKey("username") && profile.containsKey("permissions")) {
+            Map session = new HashMap<String, Object>();
+            session.put("authentication", profile.get("permissions"));
+            session.put("currentUser", getService().get(profile.get("username").toString()));
+            session.put("domain", domain);
+            session.put("sessionKey", getSession().getSessionKey());
+            return new ViewJSONWrapper(session);
+        } else {
+            return new ViewJSONWrapper(null);
+        }
+    }
+
     @RequestMapping(value="/session/logoff", method={RequestMethod.GET})
     public ViewJSONWrapper logoff(HttpServletResponse response) throws ESAppException {
         Cookie cookie = new Cookie("SESSION", null);
