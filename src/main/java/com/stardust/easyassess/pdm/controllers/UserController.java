@@ -88,7 +88,9 @@ public class UserController extends AbstractMaintenanceController<User>  {
         if (profile != null && profile.containsKey("username") && profile.containsKey("permissions")) {
             Map session = new HashMap<String, Object>();
             session.put("authentication", profile.get("permissions"));
-            session.put("currentUser", getService().get(profile.get("username").toString()));
+            User user = getService().get(profile.get("username").toString());
+            if (user == null && profile.get("username").toString().equals("adminroot")) user = new User();
+            session.put("currentUser", user);
             session.put("domain", domain);
             session.put("sessionKey", getSession().getSessionKey());
             return new ViewJSONWrapper(session);
